@@ -1,0 +1,3 @@
+name = "weather-backend"
+main = "src/index.ts"
+compatibility_date = "2026-11-02"
