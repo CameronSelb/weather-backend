@@ -1,15 +1,27 @@
-type WeatherParams = {
-  city?: string;
-  lon?: number;
-  lat?: number;
+type CityParams = {
+  city: string;
   apiKey: string;
 };
+
+type CoordinatesParams = {
+  lon: number;
+  lat: number;
+  apiKey: string;
+}
 
 export const getCityInfo = async ({
 city,
 apiKey,
-}: WeatherParams) => {
-    const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${apiKey}`);
+}: CityParams) => {
+    const url = new URL("http://api.openweathermap.org/geo/1.0/direct");
+
+    url.search = new URLSearchParams({
+      q: city,
+      limit: "5",
+      appid: apiKey,
+    }).toString();
+
+    const response = await fetch(url);
 
     if (!response.ok) {
         throw new Error("Failed to fetch city infomation");
@@ -22,8 +34,17 @@ export const getCurrentWeather = async ({
   lon,
   lat,
   apiKey,
-}: WeatherParams) => {
-  const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`);
+}: CoordinatesParams) => {
+  const url = new URL("https://api.openweathermap.org/data/2.5/weather");
+
+  url.search = new URLSearchParams({
+    lat: lat.toString(),
+    lon: lon.toString(),
+    appid: apiKey,
+    units: "metric",
+  }).toString()
+  
+  const response = await fetch(url);
 
   if (!response.ok) {
     throw new Error("Failed to fetch current weather");
