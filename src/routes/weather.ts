@@ -2,13 +2,14 @@ import { Hono } from "hono"
 import { getCityInfo, getCurrentWeather } from '../services/openweather.js'
 import type { GeoLocation } from "../types/weather.js"
 import type { Bindings } from '../types/bindings.js'
+import { DEFAULT_CITY } from "../constants/index.js"
 
 
 const app = new Hono<{ Bindings: Bindings }>()
 
 app.get('/', async (c) => {
   const apiKey = c.env.WEATHER_API_KEY
-  const city = c.req.query("city") ?? "Cape Town"
+  const city = c.req.query("city") ?? DEFAULT_CITY
   
   const cityResponse = await getCityInfo({city: city, apiKey: apiKey})
   const cityData = ((await cityResponse) as GeoLocation[])
